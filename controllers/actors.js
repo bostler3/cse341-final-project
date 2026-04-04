@@ -1,20 +1,57 @@
-const mongodb = require("../data/database");
-const ObjectId = require("mongodb").ObjectId;
+const mongodb = require('../data/database');
+const ObjectId = require('mongodb').ObjectId;
+
+const errorPayload = (code, message) => ({ code, message });
+
+const splitName = (value) => {
+  if (typeof value !== 'string' || value.trim() === '') {
+    return { firstName: value, lastName: value };
+  }
+
+  const parts = value.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+    return { firstName: parts[0], lastName: parts[0] };
+  }
+
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' '),
+  };
+};
+
+const buildActorDocument = (body, existingActor = {}) => {
+  const nameParts = splitName(body.name ?? existingActor.name);
+
+  const actor = {
+    firstName: body.firstName?.trim() ?? existingActor.firstName ?? nameParts.firstName,
+    lastName: body.lastName?.trim() ?? existingActor.lastName ?? nameParts.lastName,
+    birthDate:
+      body.birthDate ?? body.birthdate ?? existingActor.birthDate ?? existingActor.birthdate,
+    nationality: body.nationality?.trim() ?? existingActor.nationality,
+  };
+
+  const awards = body.awards ?? existingActor.awards;
+  if (awards !== undefined) {
+    actor.awards = awards;
+  }
+
+  actor.createdAt = existingActor.createdAt ?? new Date();
+  actor.updatedAt = new Date();
+
+  return actor;
+};
 
 // Get all actors from database
 const getAll = async (req, res) => {
   //#swagger.tags=["Actors"]
   try {
-    const result = await mongodb
-      .getDatabase()
-      .db()
-      .collection("actors")
-      .find()
-      .toArray();
-    res.setHeader("Content-Type", "application/json");
+    const result = await mongodb.getDatabase().db('movies').collection('actors').find().toArray();
+    res.setHeader('Content-Type', 'application/json');
     res.status(200).json(result);
   } catch (error) {
-    res.status(400).json({ message: "An error occurred." });
+    console.error('Error fetching actors:', error);
+    res.status(500).json(errorPayload('ACTORS_FETCH_FAILED', 'Internal Server Error'));
   }
 };
 
@@ -22,48 +59,43 @@ const getAll = async (req, res) => {
 const getSingle = async (req, res) => {
   //#swagger.tags=["Actors"]
   if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).json("Must use a valid actor ID to find an actor.");
+    return res
+      .status(400)
+      .json(errorPayload('INVALID_ACTOR_ID', 'Must use a valid actor ID to find an actor.'));
   }
+
   const actorId = new ObjectId(req.params.id);
   try {
-    const result = await mongodb
-      .getDatabase()
-      .db()
-      .collection("actors")
-      .find({ _id: actorId })
-      .toArray();
-    res.setHeader("Content-Type", "application/json");
-    res.status(200).json(result[0]);
+    const actor = await mongodb.getDatabase().db('movies').collection('actors').findOne({ _id: actorId });
+
+    if (!actor) {
+      return res.status(404).json(errorPayload('ACTOR_NOT_FOUND', 'Actor not found.'));
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(actor);
   } catch (error) {
-    res.status(400).json({ message: "An error occurred." });
+    console.error('Error fetching actor:', error);
+    res.status(500).json(errorPayload('ACTOR_FETCH_FAILED', 'Internal Server Error'));
   }
 };
 
 // Create a new actor
 const createActor = async (req, res) => {
   //#swagger.tags=["Actors"]
-  const actor = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    birthdate: req.body.birthdate,
-    nationality: req.body.nationality,
-    movies: req.body.movieIds,
-  };
   try {
-    const response = await mongodb
-      .getDatabase()
-      .db()
-      .collection("actors")
-      .insertOne(actor);
+    const actor = buildActorDocument(req.body);
+    const response = await mongodb.getDatabase().db('movies').collection('actors').insertOne(actor);
     if (response.acknowledged) {
-      res.status(204).send();
+      res.status(201).json({ id: response.insertedId });
     } else {
       res
         .status(500)
-        .json(response.error || "An error occurred while creating the actor.");
+        .json(errorPayload('ACTOR_CREATE_FAILED', 'An error occurred while creating the actor.'));
     }
   } catch (error) {
-    res.status(400).json({ message: "An error occurred." });
+    console.error('Error creating actor:', error);
+    res.status(500).json(errorPayload('ACTOR_CREATE_FAILED', 'Internal Server Error'));
   }
 };
 
@@ -71,31 +103,38 @@ const createActor = async (req, res) => {
 const modifyActor = async (req, res) => {
   //#swagger.tags=["Actors"]
   if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).json("Must use a valid actor ID to modify an actor.");
+    return res
+      .status(400)
+      .json(errorPayload('INVALID_ACTOR_ID', 'Must use a valid actor ID to modify an actor.'));
   }
+
   const actorId = new ObjectId(req.params.id);
-  const actor = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    birthdate: req.body.birthdate,
-    nationality: req.body.nationality,
-    movies: req.body.movieIds,
-  };
   try {
+    const existingActor = await mongodb
+      .getDatabase()
+      .db('movies')
+      .collection('actors')
+      .findOne({ _id: actorId });
+
+    if (!existingActor) {
+      return res.status(404).json(errorPayload('ACTOR_NOT_FOUND', 'Actor not found.'));
+    }
+
+    const actor = buildActorDocument(req.body, existingActor);
     const response = await mongodb
       .getDatabase()
-      .db()
-      .collection("actors")
+      .db('movies')
+      .collection('actors')
       .replaceOne({ _id: actorId }, actor);
-    if (response.modifiedCount > 0) {
-      res.status(204).send();
-    } else {
-      res
-        .status(500)
-        .json(response.error || "An error occurred while modifying the actor.");
+
+    if (response.matchedCount === 0) {
+      return res.status(404).json(errorPayload('ACTOR_NOT_FOUND', 'Actor not found.'));
     }
+
+    return res.status(204).send();
   } catch (error) {
-    res.status(400).json({ message: "An error occurred." });
+    console.error('Error updating actor:', error);
+    res.status(500).json(errorPayload('ACTOR_UPDATE_FAILED', 'Internal Server Error'));
   }
 };
 
@@ -103,24 +142,27 @@ const modifyActor = async (req, res) => {
 const deleteActor = async (req, res) => {
   //#swagger.tags=["Actors"]
   if (!ObjectId.isValid(req.params.id)) {
-    res.status(400).json("Must use a valid actor ID to delete an actor.");
+    return res
+      .status(400)
+      .json(errorPayload('INVALID_ACTOR_ID', 'Must use a valid actor ID to delete an actor.'));
   }
+
   const actorId = new ObjectId(req.params.id);
   try {
     const response = await mongodb
       .getDatabase()
-      .db()
-      .collection("actors")
+      .db('movies')
+      .collection('actors')
       .deleteOne({ _id: actorId });
-    if (response.deletedCount > 0) {
-      res.status(204).send();
-    } else {
-      res
-        .status(500)
-        .json(response.error || "An error occurred while deleting the actor.");
+
+    if (response.deletedCount === 0) {
+      return res.status(404).json(errorPayload('ACTOR_NOT_FOUND', 'Actor not found.'));
     }
+
+    return res.status(204).send();
   } catch (error) {
-    res.status(400).json({ message: "An error occurred." });
+    console.error('Error deleting actor:', error);
+    res.status(500).json(errorPayload('ACTOR_DELETE_FAILED', 'Internal Server Error'));
   }
 };
 

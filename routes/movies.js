@@ -10,8 +10,41 @@ router.get('/', movieController.getAll);
 router.get('/:id', movieController.getSingle);
 
 // Route definition with validation middleware and error handler
-router.post('/', movieValidate.movieRules, movieValidate.handleValidationErrors, movieController.createMovie);
+//#swagger.parameters['body'] = {
+//  in: 'body',
+//  required: true,
+//  schema: {
+//    title: 'The Dark Knight Rises',
+//    releaseYear: 2012,
+//    genre: ['Action'],
+//    rating: 'PG-13',
+//    runtimeMinutes: 165,
+//    directorId: '67f0c3e0a1b2c3d4e5f60789',
+//    actorIds: ['67f0c3e0a1b2c3d4e5f60790', '67f0c3e0a1b2c3d4e5f60791'],
+//    synopsis: 'Bane attacks Gotham, forcing Bruce Wayne to become Batman again.'
+//  }
+//}
+router.post(
+  '/',
+  movieValidate.movieRules,
+  movieValidate.handleValidationErrors,
+  movieController.createMovie
+);
 
+//#swagger.parameters['body'] = {
+//  in: 'body',
+//  required: true,
+//  schema: {
+//    title: 'The Dark Knight Rises',
+//    releaseYear: 2012,
+//    genre: ['Action', 'Crime'],
+//    rating: 'PG-13',
+//    runtimeMinutes: 165,
+//    directorId: '67f0c3e0a1b2c3d4e5f60789',
+//    actorIds: ['67f0c3e0a1b2c3d4e5f60790', '67f0c3e0a1b2c3d4e5f60791'],
+//    synopsis: 'Bane attacks Gotham, forcing Bruce Wayne to become Batman again.'
+//  }
+//}
 router.put('/:id', movieController.updateMovie);
 
 router.delete('/:id', movieController.deleteMovie);

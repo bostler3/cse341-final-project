@@ -7,22 +7,16 @@
   },
   "host": "localhost:8080",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/movies/": {
       "get": {
+        "tags": ["Movies"],
         "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -30,42 +24,8 @@
         }
       },
       "post": {
+        "tags": ["Movies"],
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "genre": {
-                  "example": "any"
-                },
-                "releaseYear": {
-                  "example": "any"
-                },
-                "directorId": {
-                  "example": "any"
-                },
-                "actors": {
-                  "example": "any"
-                },
-                "imdbId": {
-                  "example": "any"
-                },
-                "rating": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -76,15 +36,24 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MoviePostInput"
+            }
+          }
+        ]
       }
     },
     "/movies/{id}": {
       "get": {
+        "tags": ["Movies"],
         "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
@@ -100,12 +69,16 @@
           "400": {
             "description": "Bad Request"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
       "put": {
+        "tags": ["Movies"],
         "description": "",
         "parameters": [
           {
@@ -117,34 +90,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "genre": {
-                  "example": "any"
-                },
-                "releaseYear": {
-                  "example": "any"
-                },
-                "directorId": {
-                  "example": "any"
-                },
-                "actors": {
-                  "example": "any"
-                },
-                "imdbId": {
-                  "example": "any"
-                },
-                "rating": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/MoviePutInput"
             }
           }
         ],
@@ -152,12 +100,19 @@
           "204": {
             "description": "No Content"
           },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
       "delete": {
+        "tags": ["Movies"],
         "description": "",
         "parameters": [
           {
@@ -170,6 +125,12 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -179,56 +140,24 @@
     },
     "/actors/": {
       "get": {
-        "tags": [
-          "Actors"
-        ],
+        "tags": ["Actors"],
         "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
       "post": {
-        "tags": [
-          "Actors"
-        ],
+        "tags": ["Actors"],
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                },
-                "birthdate": {
-                  "example": "any"
-                },
-                "nationality": {
-                  "example": "any"
-                },
-                "movieIds": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
@@ -236,18 +165,24 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ActorPostInput"
+            }
+          }
+        ]
       }
     },
     "/actors/{id}": {
       "get": {
-        "tags": [
-          "Actors"
-        ],
+        "tags": ["Actors"],
         "description": "",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
@@ -262,13 +197,17 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       },
       "put": {
-        "tags": [
-          "Actors"
-        ],
+        "tags": ["Actors"],
         "description": "",
         "parameters": [
           {
@@ -280,25 +219,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                },
-                "birthdate": {
-                  "example": "any"
-                },
-                "nationality": {
-                  "example": "any"
-                },
-                "movieIds": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/ActorPutInput"
             }
           }
         ],
@@ -308,6 +231,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -315,9 +241,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Actors"
-        ],
+        "tags": ["Actors"],
         "description": "",
         "parameters": [
           {
@@ -334,10 +258,215 @@
           "400": {
             "description": "Bad Request"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
         }
+      }
+    }
+  },
+  "definitions": {
+    "MoviePostInput": {
+      "type": "object",
+      "required": [
+        "title",
+        "releaseYear",
+        "genre",
+        "rating",
+        "runtimeMinutes",
+        "directorId",
+        "actorIds",
+        "synopsis"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "The Dark Knight Rises"
+        },
+        "releaseYear": {
+          "type": "integer",
+          "example": 2012
+        },
+        "genre": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Action"]
+        },
+        "rating": {
+          "type": "string",
+          "example": "PG-13"
+        },
+        "runtimeMinutes": {
+          "type": "integer",
+          "example": 165
+        },
+        "directorId": {
+          "type": "string",
+          "example": "67f0c3e0a1b2c3d4e5f60789"
+        },
+        "actorIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["67f0c3e0a1b2c3d4e5f60790", "67f0c3e0a1b2c3d4e5f60791"]
+        },
+        "synopsis": {
+          "type": "string",
+          "example": "Bane, an imposing terrorist, attacks Gotham City and disrupts its eight-year-long period of peace."
+        }
+      },
+      "example": {
+        "title": "The Dark Knight Rises",
+        "releaseYear": 2012,
+        "genre": ["Action"],
+        "rating": "PG-13",
+        "runtimeMinutes": 165,
+        "directorId": "67f0c3e0a1b2c3d4e5f60789",
+        "actorIds": ["67f0c3e0a1b2c3d4e5f60790", "67f0c3e0a1b2c3d4e5f60791"],
+        "synopsis": "Bane, an imposing terrorist, attacks Gotham City and disrupts its eight-year-long period of peace."
+      }
+    },
+    "MoviePutInput": {
+      "type": "object",
+      "required": [
+        "title",
+        "releaseYear",
+        "genre",
+        "rating",
+        "runtimeMinutes",
+        "directorId",
+        "actorIds",
+        "synopsis"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "The Dark Knight Rises"
+        },
+        "releaseYear": {
+          "type": "integer",
+          "example": 2012
+        },
+        "genre": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Action", "Crime"]
+        },
+        "rating": {
+          "type": "string",
+          "example": "PG-13"
+        },
+        "runtimeMinutes": {
+          "type": "integer",
+          "example": 165
+        },
+        "directorId": {
+          "type": "string",
+          "example": "67f0c3e0a1b2c3d4e5f60789"
+        },
+        "actorIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["67f0c3e0a1b2c3d4e5f60790", "67f0c3e0a1b2c3d4e5f60791"]
+        },
+        "synopsis": {
+          "type": "string",
+          "example": "Bane, an imposing terrorist, attacks Gotham City and disrupts its eight-year-long period of peace. This forces Bruce Wayne to come out of hiding and don the cape and cowl of Batman again."
+        }
+      },
+      "example": {
+        "title": "The Dark Knight Rises",
+        "releaseYear": 2012,
+        "genre": ["Action", "Crime"],
+        "rating": "PG-13",
+        "runtimeMinutes": 165,
+        "directorId": "67f0c3e0a1b2c3d4e5f60789",
+        "actorIds": ["67f0c3e0a1b2c3d4e5f60790", "67f0c3e0a1b2c3d4e5f60791"],
+        "synopsis": "Bane, an imposing terrorist, attacks Gotham City and disrupts its eight-year-long period of peace. This forces Bruce Wayne to come out of hiding and don the cape and cowl of Batman again."
+      }
+    },
+    "ActorPostInput": {
+      "type": "object",
+      "required": ["firstName", "lastName", "birthDate", "nationality", "awards"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "Christian"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Bale"
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date",
+          "example": "1975-01-30"
+        },
+        "nationality": {
+          "type": "string",
+          "example": "British"
+        },
+        "awards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Academy Award"]
+        }
+      },
+      "example": {
+        "firstName": "Christian",
+        "lastName": "Bale",
+        "birthDate": "1975-01-30",
+        "nationality": "British",
+        "awards": ["Academy Award"]
+      }
+    },
+    "ActorPutInput": {
+      "type": "object",
+      "required": ["firstName", "lastName", "birthDate", "nationality", "awards"],
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "example": "Christian"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Bale"
+        },
+        "birthDate": {
+          "type": "string",
+          "format": "date",
+          "example": "1974-01-30"
+        },
+        "nationality": {
+          "type": "string",
+          "example": "British"
+        },
+        "awards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ["Academy Award"]
+        }
+      },
+      "example": {
+        "firstName": "Christian",
+        "lastName": "Bale",
+        "birthDate": "1974-01-30",
+        "nationality": "British",
+        "awards": ["Academy Award"]
       }
     }
   }

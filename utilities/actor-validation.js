@@ -5,7 +5,10 @@ const validate = {}
 validate.actorRules = [
     body("firstName").notEmpty().withMessage("First name required."),
     body("lastName").notEmpty().withMessage("Last name required."), 
-    body("birthdate").notEmpty().withMessage("Birthdate required."), 
+    body("birthDate")
+      .notEmpty().withMessage("BirthDate required.")
+      .bail()
+      .isISO8601().withMessage("BirthDate must be a valid date (YYYY-MM-DD)."), 
     body("nationality").notEmpty().withMessage("Nationality required.") 
 ];
 
@@ -15,7 +18,11 @@ validate.handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         // If there are errors, return a 400 status with the error details
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({
+            code: "VALIDATION_ERROR",
+            message: "Validation failed.",
+            details: errors.array()
+        });
     }
     next(); // Pass control to the next handler (controller)
 };

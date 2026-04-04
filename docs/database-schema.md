@@ -2,7 +2,7 @@
 
 ## Database Name
 
-- movie_api
+- movies
 
 ## Collections
 
@@ -25,7 +25,7 @@ Example document:
 {
   "_id": "ObjectId",
   "githubId": "12345678",
-  "displayName": "Francesco Bostler",
+  "displayName": "Francesco",
   "email": "francesco@example.com",
   "role": "admin",
   "createdAt": "2026-04-01T00:00:00.000Z",
@@ -48,7 +48,6 @@ Required fields:
 - lastName (string)
 - birthDate (date)
 - nationality (string)
-- createdBy (ObjectId -> users.\_id)
 - createdAt (date)
 - updatedAt (date)
 
@@ -63,10 +62,9 @@ Example document:
   "_id": "ObjectId",
   "firstName": "Christopher",
   "lastName": "Nolan",
-  "birthDate": "1970-07-30T00:00:00.000Z",
+  "birthDate": "1970-07-30",
   "nationality": "British-American",
   "awards": ["Academy Award"],
-  "createdBy": "ObjectId",
   "createdAt": "2026-04-01T00:00:00.000Z",
   "updatedAt": "2026-04-01T00:00:00.000Z"
 }
@@ -93,6 +91,21 @@ Optional fields:
 
 - awards (array of strings)
 
+Example document:
+
+```json
+{
+  "_id": "ObjectId",
+  "firstName": "Tom",
+  "lastName": "Hanks",
+  "birthDate": "1956-07-09",
+  "nationality": "American",
+  "awards": ["Academy Award"],
+  "createdAt": "2026-04-01T00:00:00.000Z",
+  "updatedAt": "2026-04-01T00:00:00.000Z"
+}
+```
+
 Indexes:
 
 - compound index on lastName + firstName
@@ -105,7 +118,7 @@ Required fields:
 
 - title (string)
 - releaseYear (number)
-- genre (string)
+- genre (array of strings)
 - rating (string)
 - runtimeMinutes (number)
 - directorId (ObjectId -> directors.\_id)
