@@ -66,7 +66,11 @@ const getSingle = async (req, res) => {
 
   const actorId = new ObjectId(req.params.id);
   try {
-    const actor = await mongodb.getDatabase().db('movies').collection('actors').findOne({ _id: actorId });
+    const actor = await mongodb
+      .getDatabase()
+      .db('movies')
+      .collection('actors')
+      .findOne({ _id: actorId });
 
     if (!actor) {
       return res.status(404).json(errorPayload('ACTOR_NOT_FOUND', 'Actor not found.'));
