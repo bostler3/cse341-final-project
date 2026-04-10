@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const validation = require('../utilities/actor-validation');
 const actorsController = require('../controllers/actors');
+const { ensureAuthenticatedApi } = require('../middleware/requireAuth');
 
 // Route/endpoint to get all actors from database
 router.get('/', actorsController.getAll);
@@ -23,6 +24,7 @@ router.get('/:id', actorsController.getSingle);
 //}
 router.post(
   '/',
+  ensureAuthenticatedApi,
   validation.actorRules,
   validation.handleValidationErrors,
   actorsController.createActor
@@ -42,12 +44,13 @@ router.post(
 //}
 router.put(
   '/:id',
+  ensureAuthenticatedApi,
   validation.actorRules,
   validation.handleValidationErrors,
   actorsController.modifyActor
 );
 
 // Route/endpoint to delete an existing actor
-router.delete('/:id', actorsController.deleteActor);
+router.delete('/:id', ensureAuthenticatedApi, actorsController.deleteActor);
 
 module.exports = router;

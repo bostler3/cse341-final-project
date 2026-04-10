@@ -19,6 +19,17 @@ root file where the route starts, such as index.js, app.js, routes.js, etc ... *
 swaggerAutogen(outputFile, routes, doc).then(() => {
   const generatedSpec = JSON.parse(fs.readFileSync(outputFile, 'utf8'));
 
+  generatedSpec.securityDefinitions = {
+    ...(generatedSpec.securityDefinitions || {}),
+    sessionAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Cookie',
+      description:
+        'Session-based auth. Login via /auth/github in the browser; Swagger requests use the session cookie automatically.',
+    },
+  };
+
   generatedSpec.definitions = {
     ...(generatedSpec.definitions || {}),
     MoviePostInput: {
@@ -141,6 +152,82 @@ swaggerAutogen(outputFile, routes, doc).then(() => {
         awards: ['Academy Award'],
       },
     },
+    DirectorPostInput: {
+      type: 'object',
+      required: ['firstName', 'lastName', 'birthDate', 'nationality'],
+      properties: {
+        firstName: { type: 'string', example: 'Robert' },
+        lastName: { type: 'string', example: 'Zemeckis' },
+        birthDate: { type: 'string', format: 'date', example: '1950-05-14' },
+        nationality: { type: 'string', example: 'American' },
+        awards: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['Academy Award Best Director'],
+        },
+      },
+      example: {
+        firstName: 'Robert',
+        lastName: 'Zemeckis',
+        birthDate: '1950-05-14',
+        nationality: 'American',
+        awards: ['Academy Award Best Director'],
+      },
+    },
+    DirectorPutInput: {
+      type: 'object',
+      required: ['firstName', 'lastName', 'birthDate', 'nationality'],
+      properties: {
+        firstName: { type: 'string', example: 'Robert' },
+        lastName: { type: 'string', example: 'Zemeckis' },
+        birthDate: { type: 'string', format: 'date', example: '1951-05-14' },
+        nationality: { type: 'string', example: 'American' },
+        awards: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['Academy Award Best Director'],
+        },
+      },
+      example: {
+        firstName: 'Robert',
+        lastName: 'Zemeckis',
+        birthDate: '1951-05-14',
+        nationality: 'American',
+        awards: ['Academy Award Best Director'],
+      },
+    },
+    UserPostInput: {
+      type: 'object',
+      required: ['firstName', 'lastName', 'email'],
+      properties: {
+        firstName: { type: 'string', example: 'John' },
+        lastName: { type: 'string', example: 'Doe' },
+        email: { type: 'string', format: 'email', example: 'john.doe@example.com' },
+        githubId: { type: 'string', example: '12345' },
+      },
+      example: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        githubId: '12345',
+      },
+    },
+    UserPutInput: {
+      type: 'object',
+      required: ['firstName', 'lastName', 'email'],
+      properties: {
+        firstName: { type: 'string', example: 'John' },
+        lastName: { type: 'string', example: 'Smith' },
+        email: { type: 'string', format: 'email', example: 'john.smith@example.com' },
+        githubId: { type: 'string', example: '12345' },
+      },
+      example: {
+        firstName: 'John',
+        lastName: 'Smith',
+        email: 'john.smith@example.com',
+        githubId: '12345',
+      },
+    },
   };
 
   const addBodyParam = (operation, definitionName) => {
@@ -160,10 +247,33 @@ swaggerAutogen(outputFile, routes, doc).then(() => {
     ];
   };
 
+  const addSecurity = (operation) => {
+    if (!operation) return;
+
+    operation.security = [{ sessionAuth: [] }];
+  };
+
   addBodyParam(generatedSpec.paths?.['/movies/']?.post, 'MoviePostInput');
   addBodyParam(generatedSpec.paths?.['/movies/{id}']?.put, 'MoviePutInput');
   addBodyParam(generatedSpec.paths?.['/actors/']?.post, 'ActorPostInput');
   addBodyParam(generatedSpec.paths?.['/actors/{id}']?.put, 'ActorPutInput');
+  addBodyParam(generatedSpec.paths?.['/directors/']?.post, 'DirectorPostInput');
+  addBodyParam(generatedSpec.paths?.['/directors/{id}']?.put, 'DirectorPutInput');
+  addBodyParam(generatedSpec.paths?.['/users/']?.post, 'UserPostInput');
+  addBodyParam(generatedSpec.paths?.['/users/{id}']?.put, 'UserPutInput');
+
+  addSecurity(generatedSpec.paths?.['/movies/']?.post);
+  addSecurity(generatedSpec.paths?.['/movies/{id}']?.put);
+  addSecurity(generatedSpec.paths?.['/movies/{id}']?.delete);
+  addSecurity(generatedSpec.paths?.['/actors/']?.post);
+  addSecurity(generatedSpec.paths?.['/actors/{id}']?.put);
+  addSecurity(generatedSpec.paths?.['/actors/{id}']?.delete);
+  addSecurity(generatedSpec.paths?.['/directors/']?.post);
+  addSecurity(generatedSpec.paths?.['/directors/{id}']?.put);
+  addSecurity(generatedSpec.paths?.['/directors/{id}']?.delete);
+  addSecurity(generatedSpec.paths?.['/users/']?.post);
+  addSecurity(generatedSpec.paths?.['/users/{id}']?.put);
+  addSecurity(generatedSpec.paths?.['/users/{id}']?.delete);
 
   if (generatedSpec.paths && generatedSpec.paths['/']) {
     delete generatedSpec.paths['/'];

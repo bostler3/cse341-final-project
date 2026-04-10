@@ -1,5 +1,6 @@
 const movieController = require('../controllers/movies');
 const movieValidate = require('../utilities/movie-validation');
+const { ensureAuthenticatedApi } = require('../middleware/requireAuth');
 
 const router = require('express').Router();
 
@@ -26,6 +27,7 @@ router.get('/:id', movieController.getSingle);
 //}
 router.post(
   '/',
+  ensureAuthenticatedApi,
   movieValidate.movieRules,
   movieValidate.handleValidationErrors,
   movieController.createMovie
@@ -45,8 +47,14 @@ router.post(
 //    synopsis: 'Bane attacks Gotham, forcing Bruce Wayne to become Batman again.'
 //  }
 //}
-router.put('/:id', movieController.updateMovie);
+router.put(
+  '/:id',
+  ensureAuthenticatedApi,
+  movieValidate.movieRules,
+  movieValidate.handleValidationErrors,
+  movieController.updateMovie
+);
 
-router.delete('/:id', movieController.deleteMovie);
+router.delete('/:id', ensureAuthenticatedApi, movieController.deleteMovie);
 
 module.exports = router;
