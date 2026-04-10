@@ -9,6 +9,12 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const app = express();
 const swaggerRoutes = require('./routes/swagger');
 const port = process.env.PORT || 8080;
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  // Render terminates TLS at the proxy; trust it so secure cookies work.
+  app.set('trust proxy', 1);
+}
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -19,8 +25,10 @@ app.use(
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    proxy: isProduction,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
+      sameSite: 'lax',
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
