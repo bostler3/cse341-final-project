@@ -1026,18 +1026,18 @@
     "UserPostInput": {
       "type": "object",
       "required": [
-        "firstName",
-        "lastName",
+        "displayName",
+        "role",
         "email"
       ],
       "properties": {
-        "firstName": {
+        "displayName": {
           "type": "string",
-          "example": "John"
+          "example": "John.Doe"
         },
-        "lastName": {
+        "role": {
           "type": "string",
-          "example": "Doe"
+          "example": "editor"
         },
         "email": {
           "type": "string",
@@ -1050,8 +1050,8 @@
         }
       },
       "example": {
-        "firstName": "John",
-        "lastName": "Doe",
+        "displayName": "John.Doe",
+        "role": "Doe",
         "email": "john.doe@example.com",
         "githubId": "12345"
       }
@@ -1059,18 +1059,18 @@
     "UserPutInput": {
       "type": "object",
       "required": [
-        "firstName",
-        "lastName",
+        "displayName",
+        "role",
         "email"
       ],
       "properties": {
-        "firstName": {
+        "displayName": {
           "type": "string",
-          "example": "John"
+          "example": "John.Smith"
         },
-        "lastName": {
+        "role": {
           "type": "string",
-          "example": "Smith"
+          "example": "editor"
         },
         "email": {
           "type": "string",
@@ -1083,8 +1083,8 @@
         }
       },
       "example": {
-        "firstName": "John",
-        "lastName": "Smith",
+        "displayName": "John.Smith",
+        "role": "editor",
         "email": "john.smith@example.com",
         "githubId": "12345"
       }

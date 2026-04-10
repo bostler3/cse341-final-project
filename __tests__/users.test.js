@@ -14,15 +14,15 @@ describe('User Controller - GET Routes', () => {
       const mockUsers = [
         {
           _id: '507f1f77bcf86cd799439011',
-          firstName: 'John',
-          lastName: 'Doe',
+          displayName: 'John.Doe',
+          role: 'editor',
           email: 'john@example.com',
           githubId: '12345',
         },
         {
           _id: '507f1f77bcf86cd799439012',
-          firstName: 'Jane',
-          lastName: 'Smith',
+          displayName: 'Jane.Smith',
+          role: 'editor',
           email: 'jane@example.com',
           githubId: '67890',
         },
@@ -91,8 +91,8 @@ describe('User Controller - GET Routes', () => {
       const userId = '507f1f77bcf86cd799439011';
       const mockUser = {
         _id: userId,
-        firstName: 'John',
-        lastName: 'Doe',
+        displayName: 'John.Doe',
+        role: 'editor',
         email: 'john@example.com',
         githubId: '12345',
       };

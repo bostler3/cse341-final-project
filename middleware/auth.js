@@ -22,10 +22,9 @@ passport.use(
           // Create a new user if doesn't exist
           const newUser = {
             githubId: profile.id,
-            firstName: profile.displayName?.split(' ')[0] || profile.username,
-            lastName: profile.displayName?.split(' ').slice(1).join(' ') || '',
+            displayName: profile.displayName || profile.username,
             email: profile.emails?.[0]?.value || `${profile.username}@github.com`,
-            profileUrl: profile.profileUrl,
+            role: 'editor',
             createdAt: new Date(),
             updatedAt: new Date(),
           };

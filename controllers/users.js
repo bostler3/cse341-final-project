@@ -5,9 +5,9 @@ const errorPayload = (code, message) => ({ code, message });
 
 const buildUserDocument = (body, existingUser = {}) => {
   const user = {
-    firstName: body.firstName?.trim() ?? existingUser.firstName,
-    lastName: body.lastName?.trim() ?? existingUser.lastName,
+    displayName: body.displayName?.trim() ?? existingUser.displayName,
     email: body.email?.trim() ?? existingUser.email,
+    role: body.role ?? existingUser.role ?? 'editor',
   };
 
   // githubId is typically set during OAuth but can be provided

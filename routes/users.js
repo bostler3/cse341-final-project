@@ -15,10 +15,9 @@ router.get('/:id', usersController.getSingle);
 //  in: 'body',
 //  required: true,
 //  schema: {
-//    firstName: 'John',
-//    lastName: 'Doe',
+//    displayName: 'John Doe',
 //    email: 'john.doe@example.com',
-//    githubId: '12345'
+//    role: 'editor'
 //  }
 //}
 router.post(
@@ -34,8 +33,8 @@ router.post(
 //  in: 'body',
 //  required: true,
 //  schema: {
-//    firstName: 'John',
-//    lastName: 'Smith',
+//    displayName: 'John.Smith',
+//    role: 'editor',
 //    email: 'john.smith@example.com',
 //    githubId: '12345'
 //  }

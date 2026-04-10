@@ -3,8 +3,7 @@ const validate = {};
 
 // User Validation Rules
 validate.userRules = [
-  body('firstName').notEmpty().withMessage('First name required.'),
-  body('lastName').notEmpty().withMessage('Last name required.'),
+  body('displayName').notEmpty().withMessage('Display name required.'),
   body('email')
     .notEmpty()
     .withMessage('Email required.')
