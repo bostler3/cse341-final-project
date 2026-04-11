@@ -1051,7 +1051,7 @@
       },
       "example": {
         "displayName": "John.Doe",
-        "role": "Doe",
+        "role": "editor",
         "email": "john.doe@example.com",
         "githubId": "12345"
       }
